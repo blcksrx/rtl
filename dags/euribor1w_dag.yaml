@@ -1,0 +1,30 @@
+---
+template: european_central_bank_dag.py
+dag:
+  dag_id: euribor1w_dag
+  schedule: '@daily'
+  start_date: 2022-02-01
+  end_date: 2022-03-01
+tasks:
+  extract_task:
+    dataset: ECB,EST
+    key: B.EU000A2QQF16.CR
+    params:
+      - 'startPeriod={{ ds }}'
+      - 'endPeriod={{ tomorrow_ds }}'
+      - 'format=jsondata'
+  load_database_task:
+    load_database_conn: datawarehouse_conn
+    load_database_sql: |
+      INSERT INTO  {{ dag.dag_id }}_raw (value) VALUES ('{{ task_instance.xcom_pull(task_ids="extract_task") }}');
+  transform_database_task:
+    transform_database_conn: datawarehouse_conn
+    transform_database_sql:
+      INSERT IGNORE INTO {{ dag.dag_id }}_transformed (id, value)
+      SELECT
+      JSON_EXTRACT(value, '$.header.id'),
+      JSON_EXTRACT(value, '$.dataSets[0].series."0:0:0".observations."0"[0]')
+      FROM
+      {{ dag.dag_id }}_raw
+      WHERE
+        value is not NULL;
