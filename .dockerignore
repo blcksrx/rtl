@@ -1,0 +1,10 @@
+# Ignore everything
+**
+
+# Allow only these directories
+!dags/*_dag.yaml
+!dags/factory.py
+!plugins
+!requirements.txt
+!secrets
+!templates
