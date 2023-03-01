@@ -16,8 +16,8 @@ repos:
     hooks:
       - id: black
         args:
-        - '--exclude=dags/*_dag.py'
-        - '--line-length=120'
+          - '--exclude=dags/*_dag.py'
+          - '--line-length=120'
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:

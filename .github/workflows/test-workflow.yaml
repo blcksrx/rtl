@@ -17,6 +17,6 @@ jobs:
       - name: Run Checks
         run: |
           yamllint -c=.yamllint.yaml ./
-          black --exclude dags/*_dag.py --line-length=120 --check templates/ dags/ 
+          black --exclude dags/*_dag.py --line-length=120 --check templates/ dags/
           isort --line-length=120  -c templates/ dags/
           flake8 --max-line-length=120 templates dags/

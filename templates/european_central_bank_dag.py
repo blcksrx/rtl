@@ -39,17 +39,13 @@ with DAG(
         task_id="extract_task",
         method="GET",
         http_conn_id="european_central_bank_api_conn",
-        endpoint="{{ extract_task.dataset }}/"
-        "{{ extract_task.key }}?"
-        "{{ extract_task.params | join('&') }}",
+        endpoint="{{ extract_task.dataset }}/" "{{ extract_task.key }}?" "{{ extract_task.params | join('&') }}",
         response_check=lambda response: response.status_code == 200,
         response_filter=lambda response: response.text if response.text else "{}",
         do_xcom_push=True,
     )
 
-    load_storage_task = PythonOperator(
-        task_id="load_storage_task", python_callable=load_to_storage
-    )
+    load_storage_task = PythonOperator(task_id="load_storage_task", python_callable=load_to_storage)
 
     load_database_task = MySqlOperator(
         task_id="load_database_task",
